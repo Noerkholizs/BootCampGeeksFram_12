@@ -1,0 +1,14 @@
+{
+  "name": "bootcamp_batch12",
+  "version": "1.0.0",
+  "description": "learning node.js@bootcamp geeksfarm batch 12",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "majid",
+  "license": "ISC",
+  "dependencies": {
+    "validator": "^13.12.0"
+  }
+}
