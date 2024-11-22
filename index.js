@@ -11,8 +11,8 @@ rl.question("Your name? ", (name) => {
             const isEmailValid = validator.isEmail(email)
 
             console.log(`Name : ${name}`);
-            console.log(`Mobile : ${mobile} ${isMobileValid ? valid : invalid}`)
-            console.log(`Email: ${isEmailValid ? valid : invalid}`);
+            console.log(`Mobile : ${mobile} (${isMobileValid ? "valid" : "invalid"})`)
+            console.log(`Email: ${email} (${isEmailValid ? "valid" : "invalid"})`);
             
             
 
