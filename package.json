@@ -1,14 +1,18 @@
 {
-  "name": "bootcamp_batch12",
+  "name": "nodelearningcode",
   "version": "1.0.0",
-  "description": "learning node.js@ bootcamp geeksfarm batch 12",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node 2.readFile.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "fol": "ls"
   },
-  "author": "majid",
+  "author": "Aditya",
   "license": "ISC",
+  "description": "",
   "dependencies": {
-    "validator": "^13.12.0"
+    "fs": "^0.0.1-security",
+    "validator": "^13.12.0",
+    "yargs": "^17.7.2"
   }
 }
