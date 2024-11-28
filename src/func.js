@@ -34,6 +34,8 @@ const question = (questions) => {
 const addContact = async (contact) => {
   const contacts = JSON.parse(fs.readFileSync(dataPath, "utf-8"));
 
+  // Membuat fungsi isDuplicate untuk memeriksa jika terjadi kesamaan sata/duplikasi
+  // Menggunakan method array.some() untuk memeriksa kesamaan data
   const isDuplicate = contacts.some(
     (existingContact) =>
       existingContact.name.toLowerCase() === contact.name.toLowerCase()
@@ -42,6 +44,7 @@ const addContact = async (contact) => {
   if (isDuplicate) {
     console.log(`kontak dengan nama ${contact.name} sudah ada`);
     return;
+    // Bagaimana pengunaa return?
   }
 
   contacts.push(contact);
@@ -74,6 +77,7 @@ const updateContact = (oldName, newName, newEmail, newMobile) => {
   }
 
   // Update data kontak
+  // Aku masih bingung, bagaimana ini bekerja
   contacts[contactIndex] = {
     name: newName || contacts[contactIndex].name,
     email: newEmail || contacts[contactIndex].email,
@@ -135,7 +139,7 @@ const listContact = () => {
 
   console.log("List of contact:");
   contacts.forEach((contact, index) => {
-    console.log(`${index + 1}. ${contact.name}`);
+    console.log(`${index + 1}. ${contact.name} (${contact.mobile})`);
   });
 };
 
