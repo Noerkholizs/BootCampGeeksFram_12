@@ -1,6 +1,6 @@
 const yargs = require("yargs");
 const validator = require("validator");
-const func = require("./src/func");
+const func = require("../src/func");
 
 // ADD CONTACT
 yargs.command({

@@ -1,4 +1,4 @@
-const func = require("./src/func");
+const func = require("../src/func");
 const validator = require("validator");
 
 const main = async () => {
