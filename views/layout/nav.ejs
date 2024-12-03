@@ -3,3 +3,45 @@
   <a href="/about">About</a>
   <a href="/contact">Contact</a>
 </nav>
+<head>
+  <style>
+    /* General body styling */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f9;
+    }
+
+    /* Navigation Bar Styles */
+    nav {
+      background-color: #333;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      padding: 10px 15px;
+      margin: 0 10px;
+      font-size: 1.1rem;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    nav a:hover {
+      background-color: #5cb85c;
+      color: white;
+      border-radius: 5px;
+    }
+
+    nav a.active {
+      background-color: #0275d8;
+      color: white;
+      border-radius: 5px;
+    }
+  </style>
+</head>
