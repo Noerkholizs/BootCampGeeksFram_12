@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 const port = 3000;
 const dataPath = "./data/contacts.json"; // Menyimpan path file contacts.json
-const func = require("./src/func");
+const func = require("./src/func"); // Import the factory function
 const fs = require("fs");
 const expressLayouts = require("express-ejs-layouts");
 const { log } = require("console");
@@ -51,8 +51,8 @@ app.get("/contact", (req, res) => {
 
     res.render("contact", {
       contacts,
-      pageTitle: "Contact Us",
-      headerTitle: "Kontak Kami",
+      pageTitle: "Data Contacts",
+      headerTitle: "Call this contact 🤫",
       metaDescription: "Hubungi kami melalui informasi berikut",
     });
   } catch (error) {
@@ -64,15 +64,21 @@ app.get("/contact", (req, res) => {
 // POST NEW CONTACT
 app.post("/contact", (req, res) => {
   try {
-    const data = JSON.parse(fs.readFileSync(dataPath, "utf-8"));
+    // Read existing contacts
+    const contacts = func.readContact();
+
+    // Create a new contact object
     const newContact = {
       name: req.body.name,
       email: req.body.email,
       number: req.body.number,
     };
-    data.push(newContact);
-    fs.writeFileSync(dataPath, JSON.stringify(data, null, 2)); // Save to file
-    res.redirect("/contact"); // Redirect to the contact page
+
+    // Add the new contact to the array
+    contacts.push(newContact);
+
+    // Save updated contacts to the file
+    func.saveContacts(dataPath, contacts, res); // Use `saveContacts` here
   } catch (error) {
     console.error("Error creating contact:", error);
     res.status(500).send("Internal Server Error");
@@ -82,14 +88,24 @@ app.post("/contact", (req, res) => {
 //DELETE CONTACT
 app.post("/contact/delete", (req, res) => {
   try {
-    const data = JSON.parse(fs.readFileSync(dataPath, "utf-8"));
-    const updatedData = data.filter(
+    const readContact = func.readContact();
+    const contacts = readContact.filter(
       (contact) => contact.name !== req.body.name
     );
-    fs.writeFileSync(dataPath, JSON.stringify(updatedData, null, 2)); // Save to file
-    res.redirect("/contact");
+    func.saveContacts(dataPath, contacts, res);
   } catch (error) {
     console.error("Error deleting contact:", error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+// UPDATE CONTACT
+// masih belum megerti dengan if statemnet
+app.post("/contact/update", (req, res) => {
+  try {
+    func.updateContact(req, res);
+  } catch (error) {
+    console.error("Error updating contact:", error);
     res.status(500).send("Internal Server Error");
   }
 });
