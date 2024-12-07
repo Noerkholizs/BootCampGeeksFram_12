@@ -152,6 +152,7 @@
 
 <!-- Form untuk Menambah Kontak -->
 <h2>Create New Contact</h2>
+
 <form action="/contact" method="POST">
   <div>
     <label for="name">Name:</label>
@@ -193,19 +194,7 @@
 </form>
 
 <!-- Modal untuk Menampilkan Detail Kontak -->
-<div
-  id="contactDetailsModal"
-  style="
-    display: none;
-    position: fixed;
-    top: 20%;
-    left: 30%;
-    width: 40%;
-    background: white;
-    border: 1px solid #ccc;
-    padding: 20px;
-  "
->
+<div id="contactDetailsModal">
   <h3>Contact Details</h3>
   <p><strong>Name:</strong> <span id="modalName"></span></p>
   <p><strong>Email:</strong> <span id="modalEmail"></span></p>
