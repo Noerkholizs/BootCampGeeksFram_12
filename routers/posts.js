@@ -1,14 +1,18 @@
 const express = require("express");
 const {
   getContacts,
-  createContact,
   deleteContact,
   // detailContact,
   updateContact,
-  readContacts,
-  saveContacts,
+  // readContacts,
+  // saveContacts,
   detailContact,
+  createContact,
 } = require("../controllers/postControllers");
+const { validationResult } = require("express-validator");
+const { validateContact } = require("../middlewares/validators");
+const { readContacts, saveContacts } = require("../services/contactService");
+
 const router = express.Router();
 
 // HOME PAGE
@@ -33,13 +37,13 @@ router.get("/about", (req, res) => {
 router.get("/contact", getContacts);
 
 // Get single contact
-router.get("contact/:name", detailContact);
+router.get("/contact/:name", detailContact);
 
 // Create new contact
-router.post("/contact", createContact);
+router.post("/contact", validateContact, createContact);
 
 // Update contact
-router.post("/contact/update", updateContact);
+router.post("/contact/update", validateContact, updateContact);
 
 // Delete contact
 router.post("/contact/delete", deleteContact);

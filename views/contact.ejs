@@ -1,5 +1,3 @@
-<%- include('layout/header') %> <%- include('layout/nav') %>
-
 <head>
   <style>
     /* General Styles */
@@ -108,7 +106,7 @@
 
 <!-- Contact List -->
 <h2>Contact List</h2>
-<table border="1">
+<table border="2">
   <thead>
     <tr>
       <th>Name</th>
@@ -121,7 +119,6 @@
     <tr>
       <td>
         <%= contact.name %>
-        <!-- View Details Button -->
         <button
           onclick="showContactDetails('<%= contact.name %>', '<%= contact.email %>', '<%= contact.number %>')"
         >
@@ -129,12 +126,10 @@
         </button>
       </td>
       <td>
-        <!-- Delete Button -->
         <form action="/contact/delete" method="POST" style="display: inline">
           <input type="hidden" name="name" value="<%= contact.name %>" />
           <button type="submit">Delete</button>
         </form>
-        <!-- Update Button -->
         <button
           onclick="showUpdateForm('<%= contact.name %>', '<%= contact.email %>', '<%= contact.number %>')"
         >
@@ -142,7 +137,7 @@
         </button>
       </td>
     </tr>
-    <% }); %> <% } else { %>
+    <% }) %> <% } else { %>
     <tr>
       <td colspan="2" style="text-align: center">No contacts available</td>
     </tr>
@@ -154,23 +149,47 @@
 <h2>Create New Contact</h2>
 
 <form action="/contact" method="POST">
+  <% if(typeof alert != 'undefined') { %> <% alert.forEach(function(error) { %>
+  <div class="alert alert-warning alert-dismissible show" role="alert">
+    <%= error.msg %>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">×</span>
+    </button>
+  </div>
+  <% }) %> <% } %>
   <div>
     <label for="name">Name:</label>
-    <input type="text" id="name" name="name" required />
+    <input
+      type="text"
+      id="name"
+      name="name"
+      value="<%= typeof oldData !== 'undefined' ? oldData.name : '' %>"
+    />
   </div>
   <div>
     <label for="email">Email:</label>
-    <input type="email" id="email" name="email" required />
+    <input
+      type="text"
+      id="email"
+      name="email"
+      value="<%= typeof oldData !== 'undefined' ? oldData.email : '' %>"
+    />
   </div>
   <div>
     <label for="number">Number:</label>
-    <input type="text" id="number" name="number" />
+    <input
+      type="text"
+      id="number"
+      name="number"
+      value="<%= typeof oldData !== 'undefined' ? oldData.number : '' %>"
+    />
   </div>
   <button type="submit">Create</button>
 </form>
 
 <!-- Form untuk Update Kontak -->
 <h2>Update Contact</h2>
+
 <form
   id="updateForm"
   action="/contact/update"
@@ -178,18 +197,37 @@
   style="display: none"
 >
   <input type="hidden" name="oldName" id="oldName" />
+
   <div>
     <label for="newName">New Name:</label>
-    <input type="text" id="newName" name="newName" required />
+    <input
+      type="text"
+      id="newName"
+      name="newName"
+      value="<%= typeof oldData !== 'undefined' ? oldData.newName : '' %>"
+    />
   </div>
+
   <div>
     <label for="newEmail">New Email:</label>
-    <input type="email" id="newEmail" name="newEmail" required />
+    <input
+      type="text"
+      id="newEmail"
+      name="newEmail"
+      value="<%= typeof oldData !== 'undefined' ? oldData.newEmail : '' %>"
+    />
   </div>
+
   <div>
     <label for="newNumber">New Number:</label>
-    <input type="text" id="newNumber" name="newNumber" />
+    <input
+      type="text"
+      id="newNumber"
+      name="newNumber"
+      value="<%= typeof oldData !== 'undefined' ? oldData.newNumber : '' %>"
+    />
   </div>
+
   <button type="submit">Update</button>
 </form>
 
@@ -229,5 +267,3 @@
     document.getElementById("newNumber").value = number || "";
   }
 </script>
-
-<%- include('layout/footer') %>

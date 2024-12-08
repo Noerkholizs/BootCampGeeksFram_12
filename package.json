@@ -4,7 +4,7 @@
   "main": "index.js",
   "type": "commonjs",
   "scripts": {
-    "start": "node 2.readFile.js",
+    "start": "nodemon server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "fol": "ls"
   },
@@ -19,6 +19,7 @@
     "express": "^4.21.1",
     "express-ejs-layouts": "^2.5.1",
     "express-session": "^1.18.1",
+    "express-validator": "^7.2.0",
     "fs": "^0.0.1-security",
     "morgan": "^1.10.0",
     "nodemon": "^3.1.7",

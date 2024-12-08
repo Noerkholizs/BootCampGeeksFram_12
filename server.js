@@ -1,9 +1,9 @@
 const express = require("express"); // Framework untuk membangun server
 const expressLayouts = require("express-ejs-layouts"); // Middleware untuk layout EJS
 const posts = require("./routers/posts");
-const bodyParser = require("body-parser"); // Middleware untuk mem-parsing data form
-const errorHandler = require("./middleware/error");
-const notFound = require("./middleware/notFound");
+const errorHandler = require("./middlewares/error");
+const notFound = require("./middlewares/notFound");
+
 // const fs = require("fs"); // Modul bawaan Node.js untuk bekerja dengan sistem file
 // const path = require("path"); // Modul bawaan Node.js untuk bekerja dengan path
 // const func = require("./src/func"); // Modul kustom (berisi fungsi-fungsi yang Anda buat)
@@ -15,14 +15,12 @@ const port = 3000; // Menentukan port untuk server
 // Set view engine menjadi EJS
 app.set("view engine", "ejs");
 app.set("layout", "layout/main");
-app.use(express.static("public")); // Untuk file statis seperti CSS
 app.use(expressLayouts);
+app.use(express.static("public")); // Untuk file statis seperti CSS
 
 //Body parser middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
 
 // Middleware untuk variabel global (bisa digunakan di semua view)
 app.use((req, res, next) => {
@@ -36,8 +34,13 @@ app.use((req, res, next) => {
 //Routes
 app.use("/", posts);
 
-app.use(errorHandler);
 app.use(notFound);
+app.use(errorHandler);
+
+// app.use((req, res, next) => {
+//   console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
+//   next();
+// });
 
 // Middleware untuk menangani 404 error
 // app.use((req, res) => {

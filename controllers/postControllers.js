@@ -1,71 +1,51 @@
 const fs = require("fs"); // Import modul 'fs' untuk operasi file
-const readline = require("readline"); // Import modul 'readline' untuk membaca input dari pengguna
 const validator = require("validator"); // Import modul 'validator' untuk validasi
 const path = require("path"); // For handling file paths
-const express = require("express");
-const router = express.Router(); // Create a router instance
-
+const { validationResult } = require("express-validator");
+const {
+  readContacts,
+  saveContacts,
+  defaultTitle,
+} = require("../services/contactService");
 // Define paths for data storage
 const dirPath = path.join(__dirname, "../data"); // Adjust the path to point to the "data" folder
 const dataPath = path.join(dirPath, "contacts.json"); // Menyimpan path file contacts.json
 
 // membuat folder data apabila tidak ada
-if (!fs.existsSync(dirPath)) {
-  fs.mkdirSync(dirPath);
-}
+// if (!fs.existsSync(dirPath)) {
+//   fs.mkdirSync(dirPath);
+// }
 
-// membuat file contacts.json apabila tidak ada
-if (!fs.existsSync(dataPath)) {
-  fs.writeFileSync(dataPath, "[]", "utf-8");
-}
-
-// Add middleware to parse JSON and URL-encoded data
-// app.use(express.json());
-// app.use(express.urlencoded({ extended: true }));
-// app.set("views", path.join(__dirname, "views"));
-
-// app.set("view engine", "ejs");
-// app.use(express.static("public"));
-
-// Membuat antarmuka readline untuk membaca input dari stdin dan menulis output ke stdout
-// const rl = readline.createInterface({
-//   input: process.stdin,
-//   output: process.stdout,
-// });
-
-// const question = (questions) => {
-//   return new Promise((resolve, rejects) => {
-//     rl.question(questions, (input) => {
-//       resolve(input);
-//     });
-//   });
-// };
+// // membuat file contacts.json apabila tidak ada
+// if (!fs.existsSync(dataPath)) {
+//   fs.writeFileSync(dataPath, "[]", "utf-8");
+// }
 
 // (READ) Fungsi untuk membaca data conatats dari file
-const readContacts = () => {
-  const contacts = JSON.parse(fs.readFileSync(dataPath, "utf-8"));
-  return contacts;
-};
+// const readContacts = () => {
+//   const contacts = JSON.parse(fs.readFileSync(dataPath, "utf-8"));
+//   return contacts;
+// };
 
-// (SAVE) Fungsi untuk menyimpan contact
-// Higher-order function: takes `dataPath` and returns a new function
-const saveContacts = (dataPath, contacts, res) => {
-  fs.writeFileSync(dataPath, JSON.stringify(contacts, null, 2));
-  console.log("Data added successfully!");
-  res.redirect("/contact");
-};
+// // (SAVE) Fungsi untuk menyimpan contact
+// // Higher-order function: takes `dataPath` and returns a new function
+// const saveContacts = (dataPath, contacts) => {
+//   fs.writeFileSync(dataPath, JSON.stringify(contacts, null, 2));
+//   console.log("Data added successfully!");
+// };
 
 // @desc GET all contacts
 // @route GET /contact
 const getContacts = (req, res, next) => {
   try {
     const contacts = readContacts();
+    if (!contacts) {
+      throw new Error("Contacts data is missing");
+    }
 
     return res.render("contact", {
+      defaultTitle,
       contacts,
-      pageTitle: "Data Contacts",
-      headerTitle: "Call this contact 🤫",
-      metaDescription: "Hubungi kami melalui informasi berikut",
     });
   } catch (error) {
     console.error("Error reading or parsing contacts.json:", error);
@@ -73,64 +53,6 @@ const getContacts = (req, res, next) => {
   }
 };
 
-// @desc Membuat contact baru
-// @route POST /contact
-const createContact = (req, res, next) => {
-  try {
-    const contacts = readContacts(); //Membaca file contacts.json
-
-    // Validasi input
-    if (!req.body.name || !req.body.email || !req.body.number) {
-      return res
-        .status(400)
-        .send("All fields (name, email, number) are required.");
-    }
-
-    // Membuat objek yang baru
-    const newContact = {
-      name: req.body.name,
-      email: req.body.email,
-      number: req.body.number,
-    };
-
-    // Membuat nameValidaor untuk memeriksa jika terjadi kesamaan data/duplikasi
-    // Menggunakan method array.some() untuk memeriksa kesamaan data
-    const nameValidator = contacts.some(
-      (existingContact) =>
-        existingContact.name.toLowerCase() === newContact.name.toLowerCase()
-    );
-
-    if (nameValidator) {
-      return res.redirect("/contact");
-      // return res.render("contact", {
-      //   message: `Kontak dengan nama ${newContact.name} sudah ada`,
-      //   pageTitle: "Data Contacts",
-      //   headerTitle: "Call this contact 🤫",
-      //   metaDescription: "Hubungi kami melalui informasi berikut",
-      // });
-
-      // return res
-      //   .status(400)
-      //   .json({ message: `Kontak dengan nama ${newContact.name} sudah ada` });
-
-      // return res.send(`Kontak dengan nama ${newContact.name} sudah ada`);
-      // Bagaimana pengunaa return?
-    }
-
-    // Add the new contact to the array
-    contacts.push(newContact);
-
-    // Save updated contacts to the file
-    saveContacts(dataPath, contacts, res); // Use `saveContacts` here
-    // return res.render("contact", { message: null });
-  } catch (error) {
-    console.error("Error creating contact:", error);
-    res.status(500).send("Internal Server Error");
-  }
-};
-
-// @desc GET detail contact
-// @route GET /contact
 // @desc GET detail contact
 // @route GET /contact/:name
 const detailContact = (req, res, next) => {
@@ -163,32 +85,81 @@ const detailContact = (req, res, next) => {
   }
 };
 
-// @desc Update contact
-// @route PUT /contact
-const updateContact = (req, res, next) => {
+// @desc Membuat contact baru
+// @route POST /contact
+const createContact = (req, res) => {
   try {
-    const bacaContact = readContacts(); // Panggil fungsi untuk membaca kontak
+    // Cek hasil validasi
+    const errors = validationResult(req);
+
+    // Baca data kontak saat ini
+    const contacts = readContacts();
+
+    if (!errors.isEmpty()) {
+      // Kirim ulang form jika validasi gagal, sertakan input sebelumnya
+      const alert = errors.array();
+      return res.render("contact", {
+        alert,
+        contacts,
+        oldData: req.body, // Mengirim data sebelumnya ke template
+        defaultTitle,
+      });
+    }
+
+    // Membuat objek kontak baru
+    const newContact = {
+      name: req.body.name,
+      email: req.body.email,
+      number: req.body.number,
+    };
+
+    // Tambahkan kontak baru ke array
+    contacts.push(newContact);
+
+    // Simpan kontak ke file JSON
+    saveContacts(contacts);
+
+    // Redirect ke halaman kontak
+    return res.redirect("/contact");
+  } catch (error) {
+    console.error("Error creating contact:", error);
+    res.status(500).send("Internal Server Error");
+  }
+};
+
+// @desc Update contact
+// @route POST /contact
+const updateContact = (req, res) => {
+  try {
+    // Cek hasil validasi
+    const errors = validationResult(req);
+
+    // Baca data kontak saat ini
+    const contacts = readContacts();
+
+    if (!errors.isEmpty()) {
+      // Kirim ulang form jika validasi gagal, sertakan input sebelumnya
+      const alert = errors.array();
+      return res.render("contact", {
+        alert,
+        contacts,
+        oldData: req.body, // Mengirim data sebelumnya ke template
+        defaultTitle,
+      });
+    }
+
     const { oldName, newName, newEmail, newNumber } = req.body;
-
-    // Validasi input
-    if (newEmail && !validator.isEmail(newEmail)) {
-      return res.status(400).send("Invalid email format.");
-    }
-    if (newNumber && !validator.isMobilePhone(newNumber, "any")) {
-      return res.status(400).send("Invalid mobile number format.");
-    }
-
     // Logika update
-    const contacts = bacaContact.map((contact) =>
+    const updateContact = contacts.map((contact) =>
       contact.name === oldName
         ? { name: newName, email: newEmail, number: newNumber }
         : contact
     );
 
-    saveContacts(dataPath, contacts, res); // Simpan kontak yang sudah diperbarui
-    console.log("sudah terupdate");
-  } catch (err) {
-    next(err); // Tangani error
+    saveContacts(updateContact);
+  } catch (error) {
+    console.error("Error updating contact:", error);
+    res.status(500).send("Internal Server Error");
   }
 };
 
@@ -205,7 +176,8 @@ const deleteContact = (req, res, next) => {
       return res.status(404).send("Contact not found.");
     }
 
-    saveContacts(dataPath, updatedContacts, res); // Save updated contacts
+    saveContacts(updatedContacts); // Save updated contacts
+    return res.redirect("/contact"); // Send the response
   } catch (error) {
     console.error("Error deleting contact:", error);
     next(error); // Use next() to handle errors
@@ -265,11 +237,11 @@ const deleteContact = (req, res, next) => {
 module.exports = {
   // question,
   getContacts,
-  deleteContact,
-  createContact,
   detailContact,
-  // listContact,
+  createContact,
   updateContact,
+  deleteContact,
+  // listContact,
   readContacts,
   saveContacts,
   // rl,
