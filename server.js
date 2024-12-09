@@ -3,6 +3,7 @@ const expressLayouts = require("express-ejs-layouts"); // Middleware untuk layou
 const posts = require("./routers/posts");
 const errorHandler = require("./middlewares/error");
 const notFound = require("./middlewares/notFound");
+const logger = require("./middlewares/logger");
 
 // const fs = require("fs"); // Modul bawaan Node.js untuk bekerja dengan sistem file
 // const path = require("path"); // Modul bawaan Node.js untuk bekerja dengan path
@@ -31,9 +32,13 @@ app.use((req, res, next) => {
   next();
 });
 
+// Logger middleware
+app.use(logger);
+
 //Routes
 app.use("/", posts);
 
+// Error handler
 app.use(notFound);
 app.use(errorHandler);
 

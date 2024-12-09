@@ -1,0 +1,48 @@
+<!-- Form untuk Update Kontak -->
+<h2>Update Contact</h2>
+
+<!-- Pre-filled update form -->
+<form id="updateForm" action="/contact/update" method="POST">
+  <% if(typeof alert != 'undefined') { %> <% alert.forEach(function(error) { %>
+  <div class="alert alert-warning alert-dismissible show" role="alert">
+    <%= error.msg %>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">×</span>
+    </button>
+  </div>
+  <% }) %> <% } %>
+
+  <input type="hidden" name="oldName" value="<%= oldData.oldName %>" />
+
+  <div>
+    <label for="newName">New Name:</label>
+    <input
+      type="text"
+      id="name"
+      name="name"
+      value="<%= typeof oldData !== 'undefined' ? oldData.name : '' %>"
+    />
+  </div>
+
+  <div>
+    <label for="newEmail">New Email:</label>
+    <input
+      type="text"
+      id="email"
+      name="email"
+      value="<%= typeof oldData !== 'undefined' ? oldData.email : '' %>"
+    />
+  </div>
+
+  <div>
+    <label for="newNumber">New Number:</label>
+    <input
+      type="text"
+      id="number"
+      name="number"
+      value="<%= typeof oldData !== 'undefined' ? oldData.name : '' %>"
+    />
+  </div>
+
+  <button type="submit">Update</button>
+</form>

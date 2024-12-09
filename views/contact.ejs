@@ -135,6 +135,17 @@
         >
           Update
         </button>
+
+        <script>
+          function showUpdateForm(name, email, number) {
+            const url = `/contact/update?name=${encodeURIComponent(
+              name
+            )}&email=${encodeURIComponent(email)}&number=${encodeURIComponent(
+              number || ""
+            )}`;
+            window.location.href = url;
+          }
+        </script>
       </td>
     </tr>
     <% }) %> <% } else { %>
@@ -157,6 +168,9 @@
     </button>
   </div>
   <% }) %> <% } %>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
   <div>
     <label for="name">Name:</label>
     <input
@@ -187,50 +201,6 @@
   <button type="submit">Create</button>
 </form>
 
-<!-- Form untuk Update Kontak -->
-<h2>Update Contact</h2>
-
-<form
-  id="updateForm"
-  action="/contact/update"
-  method="POST"
-  style="display: none"
->
-  <input type="hidden" name="oldName" id="oldName" />
-
-  <div>
-    <label for="newName">New Name:</label>
-    <input
-      type="text"
-      id="newName"
-      name="newName"
-      value="<%= typeof oldData !== 'undefined' ? oldData.newName : '' %>"
-    />
-  </div>
-
-  <div>
-    <label for="newEmail">New Email:</label>
-    <input
-      type="text"
-      id="newEmail"
-      name="newEmail"
-      value="<%= typeof oldData !== 'undefined' ? oldData.newEmail : '' %>"
-    />
-  </div>
-
-  <div>
-    <label for="newNumber">New Number:</label>
-    <input
-      type="text"
-      id="newNumber"
-      name="newNumber"
-      value="<%= typeof oldData !== 'undefined' ? oldData.newNumber : '' %>"
-    />
-  </div>
-
-  <button type="submit">Update</button>
-</form>
-
 <!-- Modal untuk Menampilkan Detail Kontak -->
 <div id="contactDetailsModal">
   <h3>Contact Details</h3>
@@ -255,15 +225,5 @@
   function closeModal() {
     const modal = document.getElementById("contactDetailsModal");
     modal.style.display = "none";
-  }
-
-  // Menampilkan form untuk update kontak
-  function showUpdateForm(name, email, number) {
-    const form = document.getElementById("updateForm");
-    form.style.display = "block";
-    document.getElementById("oldName").value = name;
-    document.getElementById("newName").value = name;
-    document.getElementById("newEmail").value = email;
-    document.getElementById("newNumber").value = number || "";
   }
 </script>

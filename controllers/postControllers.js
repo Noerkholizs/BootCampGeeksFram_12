@@ -34,6 +34,20 @@ const dataPath = path.join(dirPath, "contacts.json"); // Menyimpan path file con
 //   console.log("Data added successfully!");
 // };
 
+// @desc Update contacts
+// @route GET /contact/contact
+const getUpdateContact = (req, res) => {
+  const { name, email, number } = req.query;
+  res.render("updateContact", {
+    oldData: {
+      oldName: name,
+      newName: name,
+      newEmail: email,
+      newNumber: number,
+    },
+  });
+};
+
 // @desc GET all contacts
 // @route GET /contact
 const getContacts = (req, res, next) => {
@@ -131,6 +145,7 @@ const createContact = (req, res) => {
 // @route POST /contact
 const updateContact = (req, res) => {
   try {
+    console.log("passed");
     // Cek hasil validasi
     const errors = validationResult(req);
 
@@ -140,13 +155,18 @@ const updateContact = (req, res) => {
     if (!errors.isEmpty()) {
       // Kirim ulang form jika validasi gagal, sertakan input sebelumnya
       const alert = errors.array();
-      return res.render("contact", {
+      return res.render("updateContact", {
         alert,
         contacts,
         oldData: req.body, // Mengirim data sebelumnya ke template
         defaultTitle,
       });
     }
+    // const newContact = {
+    //   name: req.body.newName,
+    //   email: req.body.newEmail,
+    //   number: req.body.newNumber,
+    // };
 
     const { oldName, newName, newEmail, newNumber } = req.body;
     // Logika update
@@ -156,7 +176,10 @@ const updateContact = (req, res) => {
         : contact
     );
 
+    console.log(updateContact);
+
     saveContacts(updateContact);
+    res.redirect("/contact");
   } catch (error) {
     console.error("Error updating contact:", error);
     res.status(500).send("Internal Server Error");
@@ -241,7 +264,7 @@ module.exports = {
   createContact,
   updateContact,
   deleteContact,
-  // listContact,
+  getUpdateContact,
   readContacts,
   saveContacts,
   // rl,

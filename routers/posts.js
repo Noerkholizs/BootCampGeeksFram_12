@@ -4,6 +4,7 @@ const {
   deleteContact,
   // detailContact,
   updateContact,
+  getUpdateContact,
   // readContacts,
   // saveContacts,
   detailContact,
@@ -33,10 +34,13 @@ router.get("/about", (req, res) => {
   });
 });
 
+// Get UpdateContact
+router.get("/contact/update", getUpdateContact);
+
 // Get all contacts
 router.get("/contact", getContacts);
 
-// Get single contact
+// Get detail contact
 router.get("/contact/:name", detailContact);
 
 // Create new contact

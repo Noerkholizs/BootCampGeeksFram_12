@@ -29,14 +29,24 @@ function saveContacts(contacts) {
 // Mengecek apakah nama sudah ada
 function isNameExists(name) {
   const contacts = readContacts();
-  return contacts.some(
-    (contact) => contact.name.toLowerCase() === name.toLowerCase()
-  );
+  return contacts.some((contact) => contact.name === name);
+}
+
+function isEmailExists(email) {
+  const contacts = readContacts();
+  return contacts.some((contact) => contact.email === email);
+}
+
+function isNumberExists(number) {
+  const contacts = readContacts();
+  return contacts.some((contact) => contact.number === number);
 }
 
 module.exports = {
   readContacts,
   saveContacts,
   isNameExists,
+  isEmailExists,
+  isNumberExists,
   defaultTitle,
 };
