@@ -50,9 +50,9 @@ const getUpdateContact = (req, res) => {
 
 // @desc GET all contacts
 // @route GET /contact
-const getContacts = (req, res, next) => {
+const getContacts = async (req, res, next) => {
   try {
-    const contacts = readContacts();
+    const contacts = await readContacts();
     if (!contacts) {
       throw new Error("Contacts data is missing");
     }
@@ -72,11 +72,13 @@ const getContacts = (req, res, next) => {
 const detailContact = (req, res, next) => {
   try {
     const contacts = readContacts(); // Read the existing contacts
-    const contactName = req.params.name; // Extract the contact name from the URL parameter
+    // const contactName = req.params.name; // Extract the contact name from the URL parameter
+
+    const { nameParms } = req.params;
 
     // Find the contact with the specified name (case-insensitive)
     const contact = contacts.find(
-      (contact) => contact.name.toLowerCase() === contactName.toLowerCase()
+      (contact) => contact.name.toLowerCase() === nameParms.toLowerCase()
     );
 
     if (!contact) {
@@ -101,13 +103,13 @@ const detailContact = (req, res, next) => {
 
 // @desc Membuat contact baru
 // @route POST /contact
-const createContact = (req, res) => {
+const createContact = async (req, res) => {
   try {
     // Cek hasil validasi
     const errors = validationResult(req);
 
     // Baca data kontak saat ini
-    const contacts = readContacts();
+    const contacts = await readContacts();
 
     if (!errors.isEmpty()) {
       // Kirim ulang form jika validasi gagal, sertakan input sebelumnya
@@ -127,11 +129,8 @@ const createContact = (req, res) => {
       number: req.body.number,
     };
 
-    // Tambahkan kontak baru ke array
-    contacts.push(newContact);
-
-    // Simpan kontak ke file JSON
-    saveContacts(contacts);
+    // Simpan kontak baru ke database
+    await saveContacts(newContact.name, newContact.number, newContact.email);
 
     // Redirect ke halaman kontak
     return res.redirect("/contact");
@@ -162,23 +161,33 @@ const updateContact = (req, res) => {
         defaultTitle,
       });
     }
-    // const newContact = {
-    //   name: req.body.newName,
-    //   email: req.body.newEmail,
-    //   number: req.body.newNumber,
-    // };
+    // Extract input values
+    const {
+      oldName,
+      name: newName,
+      email: newEmail,
+      number: newNumber,
+    } = req.body;
 
-    const { oldName, newName, newEmail, newNumber } = req.body;
-    // Logika update
-    const updateContact = contacts.map((contact) =>
+    console.log("Request body:", req.body);
+    // Update the contact
+    const updatedContacts = contacts.map((contact) =>
       contact.name === oldName
         ? { name: newName, email: newEmail, number: newNumber }
         : contact
     );
 
-    console.log(updateContact);
+    console.log("Updated contacts:", updatedContacts);
+    // Logika update
+    // const updateContact = contacts.map((contact) =>
+    //   contact.name === oldName
+    //     ? { name: newName, email: newEmail, number: newNumber }
+    //     : contact
+    // );
 
-    saveContacts(updateContact);
+    console.log(updatedContacts);
+
+    saveContacts(updatedContacts);
     res.redirect("/contact");
   } catch (error) {
     console.error("Error updating contact:", error);

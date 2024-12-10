@@ -12,7 +12,11 @@
   </div>
   <% }) %> <% } %>
 
-  <input type="hidden" name="oldName" value="<%= oldData.oldName %>" />
+  <input
+    type="hidden"
+    name="oldName"
+    value="<%= typeof oldData !== 'undefined' ? oldData.oldName : '' %>"
+  />
 
   <div>
     <label for="newName">New Name:</label>
@@ -20,6 +24,7 @@
       type="text"
       id="name"
       name="name"
+      value="<%= oldData.oldName %>"
       value="<%= typeof oldData !== 'undefined' ? oldData.name : '' %>"
     />
   </div>
@@ -40,7 +45,7 @@
       type="text"
       id="number"
       name="number"
-      value="<%= typeof oldData !== 'undefined' ? oldData.name : '' %>"
+      value="<%= typeof oldData !== 'undefined' ? oldData.number : '' %>"
     />
   </div>
 
